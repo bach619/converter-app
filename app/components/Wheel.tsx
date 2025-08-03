@@ -39,7 +39,7 @@ const Wheel: React.FC<WheelProps> = ({ names, onSelectWinner }) => {
     }, 5000);
     
     return () => clearTimeout(timer);
-  }, [spinning]);
+  }, [spinning, names, onSelectWinner, rotation]);
 
   const handleSpin = () => {
     if (names.length < 2) return;

@@ -98,7 +98,7 @@ export default function SimpleCalculator() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleNumberClick, handleDecimal, handleEquals, handleClear, handleOperatorClick]);
 
   return (
     <div className="max-w-md mx-auto">

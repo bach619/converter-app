@@ -9,7 +9,6 @@ const CurrencyConverter = () => {
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
   const [currencies, setCurrencies] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [convertedAmount, setConvertedAmount] = useState<number>(0);
 
@@ -53,7 +52,6 @@ const CurrencyConverter = () => {
 
   const fetchExchangeRate = async (retryCount = 0) => {
     if (fromCurrency && toCurrency) {
-      setError(null);
       setLoading(true);
       
       // Set timeout to 5 seconds
@@ -89,7 +87,7 @@ const CurrencyConverter = () => {
           return;
         }
         
-        setError('Failed to get exchange rates. Please try again later.');
+        console.error('Failed to get exchange rates:', error);
       } finally {
         clearTimeout(timeoutId);
         setLoading(false);
@@ -214,19 +212,7 @@ const CurrencyConverter = () => {
             </div>
           )}
           
-              {error && (
-                <div className="text-red-500 text-sm">
-                  {error}
-                  <button 
-                    onClick={() => fetchExchangeRate()} 
-                    className="ml-2 text-blue-500 underline"
-                  >
-                    Retry
-                  </button>
-                </div>
-              )}
-          
-          {lastUpdated && !loading && !error && (
+          {lastUpdated && !loading && (
             <div className="text-gray-500 text-sm">
               Rate updated at: {lastUpdated}
             </div>

@@ -14,7 +14,6 @@ export default function TimeConverter() {
   // Format waktu
   const [time24, setTime24] = useState('12:00');
   const [time12, setTime12] = useState('12:00 PM');
-  const [isAM, setIsAM] = useState(false);
 
   // Ambil daftar timezone saat komponen dimuat
   useEffect(() => {
@@ -146,18 +145,6 @@ export default function TimeConverter() {
       const period = hours >= 12 ? 'PM' : 'AM';
       const twelveHour = hours % 12 || 12;
       return `${twelveHour}:${minutes.toString().padStart(2, '0')} ${period}`;
-    };
-
-    // Konversi 12 jam ke 24 jam
-    const convertTo24Hour = (time: string) => {
-      const [timePart, period] = time.split(' ');
-      const [hours, minutes] = timePart.split(':').map(Number);
-      let hour24 = hours;
-      
-      if (period === 'PM' && hours < 12) hour24 = hours + 12;
-      if (period === 'AM' && hours === 12) hour24 = 0;
-      
-      return `${hour24.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     };
 
     if (activeTab === 'format') {
