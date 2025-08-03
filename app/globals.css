@@ -9,20 +9,31 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --gradient-start: #f0f8ff;
+  --gradient-end: #e6e6fa;
 }
-
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --gradient-start: #1a1a2e;
+    --gradient-end: #16213e;
   }
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-end));
+  background-size: 400% 400%;
   color: var(--foreground);
   font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes popup {

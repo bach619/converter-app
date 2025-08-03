@@ -42,16 +42,32 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+import Link from 'next/link';
+
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
-  <meta name="google-adsense-account" content="ca-pub-6435811821902528" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6435811821902528"
-     crossOrigin="anonymous"></script>
         <meta name="author" content="Your Name" />
       </head>
-      <body>{children}</body>
+      <body>
+        <nav className="bg-white shadow-md">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-10">
+                <Link href="/" className="text-xl font-bold text-blue-600">Converter Tools</Link>
+                <div className="hidden md:flex space-x-6">
+                  <Link href="/" className="text-gray-700 hover:text-blue-600 transition">Home</Link>
+                  <Link href="/about" className="text-gray-700 hover:text-blue-600 transition">About</Link>
+                  <Link href="/privacy-policy" className="text-gray-700 hover:text-blue-600 transition">Privacy</Link>
+                  <Link href="/terms-of-service" className="text-gray-700 hover:text-blue-600 transition">Terms</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {children}
+      </body>
     </html>
   );
 }
