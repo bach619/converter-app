@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export default function SimpleCalculator() {
   const [input, setInput] = useState('0');
@@ -8,22 +8,22 @@ export default function SimpleCalculator() {
   const [operator, setOperator] = useState('');
   const [shouldReset, setShouldReset] = useState(false);
 
-  const handleNumberClick = (number: string) => {
+  const handleNumberClick = useCallback((number: string) => {
     if (input === '0' || shouldReset) {
       setInput(number);
       setShouldReset(false);
     } else {
       setInput(input + number);
     }
-  };
+  }, [input, shouldReset]);
 
-  const handleOperatorClick = (op: string) => {
+  const handleOperatorClick = useCallback((op: string) => {
     setPreviousInput(input);
     setOperator(op);
     setShouldReset(true);
-  };
+  }, [input]);
 
-  const handleEquals = async () => {
+  const handleEquals = useCallback(async () => {
     if (!operator) return;
 
     // Convert UI operator to backend operator
@@ -58,15 +58,15 @@ export default function SimpleCalculator() {
       setOperator('');
       setShouldReset(true);
     }
-  };
+  }, [operator, previousInput, input]);
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setInput('0');
     setPreviousInput('');
     setOperator('');
-  };
+  }, []);
 
-  const handleDecimal = () => {
+  const handleDecimal = useCallback(() => {
     if (shouldReset) {
       setInput('0.');
       setShouldReset(false);
@@ -76,7 +76,7 @@ export default function SimpleCalculator() {
     if (!input.includes('.')) {
       setInput(input + '.');
     }
-  };
+  }, [input, shouldReset]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

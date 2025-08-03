@@ -100,7 +100,7 @@ const CurrencyConverter = () => {
     if (fromCurrency && toCurrency && fromCurrency !== toCurrency) {
       fetchExchangeRate();
     }
-  }, [fromCurrency, toCurrency]);
+  }, [fromCurrency, toCurrency, fetchExchangeRate]);
 
   const handleSwap = () => {
     // Simply swap currencies - conversion will happen automatically
