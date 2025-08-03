@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ultimate Free Converter Tools | Fast & Accurate Conversion",
     description: "Free online tools for converting currencies, units, time zones, and more. Accurate real-time conversions with no installation required.",
-    url: "https://yourdomain.com", // Replace with actual domain
+    url: "https://app.instapure.fun", // Replace with actual domain
     images: [
       {
         url: "https://yourdomain.com/og-image.jpg", // Replace with actual OG image
@@ -30,11 +30,11 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ultimate Free Converter Tools | Fast & Accurate Conversion",
     description: "Free online tools for converting currencies, units, time zones, and more. Accurate real-time conversions with no installation required.",
-    images: ["https://yourdomain.com/og-image.jpg"], // Replace with actual Twitter image
+    images: ["https://app.instapure.fun/og-image.jpg"], // Replace with actual Twitter image
   },
   viewport: "width=device-width, initial-scale=1",
   alternates: {
-    canonical: "https://yourdomain.com", // Replace with actual domain
+    canonical: "https://app.instapure.fun", // Replace with actual domain
   },
 };
 
@@ -46,6 +46,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
+  <meta name="google-adsense-account" content="ca-pub-6435811821902528" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6435811821902528"
+     crossOrigin="anonymous"></script>
         <meta name="author" content="Your Name" />
       </head>
       <body>{children}</body>

@@ -30,7 +30,9 @@ export default function SimpleCalculator() {
     const backendOperator = operator === '×' ? '*' : operator === '÷' ? '/' : operator;
 
     try {
-      const response = await fetch('/api/calculate', {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+      const apiUrl = `${baseUrl}/api/calculate`;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
