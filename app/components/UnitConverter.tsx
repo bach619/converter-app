@@ -106,14 +106,14 @@ const UnitConverter = () => {
 
   return (
     <div className="p-4 border rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Unit Converter</h2>
+      <h2 className="text-2xl font-semibold mb-4">Unit Converter</h2>
       
       <div className="mb-4">
         <label className="block mb-2">Category</label>
         <select 
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded text-lg"
         >
           <option value="length">Length</option>
           <option value="weight">Weight</option>

@@ -15,9 +15,23 @@ const CurrencyConverter = () => {
 
   // Supported currencies
   const popularCurrencies = [
-    'USD', 'IDR', 'EUR', 'GBP', 'JPY', 'SGD',
-    'AUD', 'CAD', 'CHF', 'CNY', 'HKD', 'INR',
-    'MXN', 'MYR', 'NZD', 'RUB', 'THB', 'VND'
+    'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG',
+    'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB',
+    'BRL', 'BSD', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP',
+    'CNY', 'COP', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD',
+    'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'FOK', 'GBP', 'GEL', 'GGP',
+    'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG',
+    'HUF', 'IDR', 'ILS', 'IMP', 'INR', 'IQD', 'IRR', 'ISK', 'JEP', 'JMD',
+    'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KID', 'KMF', 'KRW', 'KWD', 'KYD',
+    'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA',
+    'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR',
+    'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN',
+    'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF',
+    'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLE', 'SLL', 'SOS',
+    'SRD', 'SSP', 'STN', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP',
+    'TRY', 'TTD', 'TVD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VES',
+    'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XCG', 'XDR', 'XOF', 'XPF', 'YER',
+    'ZAR', 'ZMW', 'ZWL'
   ];
 
   useEffect(() => {
@@ -37,29 +51,47 @@ const CurrencyConverter = () => {
     fetchCurrencies();
   }, []);
 
-  const fetchExchangeRate = async () => {
+  const fetchExchangeRate = async (retryCount = 0) => {
     if (fromCurrency && toCurrency) {
       setError(null);
       setLoading(true);
+      
+      // Set timeout to 5 seconds
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
       try {
         const response = await fetch(
-          `https://api.exchangerate.host/convert?from=${fromCurrency}&to=${toCurrency}`
+          `https://v6.exchangerate-api.com/v6/9c983e5711b0cd0d8566762a/latest/${fromCurrency}`,
+          { signal: controller.signal }
         );
+        
         const data = await response.json();
         
-        if (data.success) {
-          setExchangeRate(data.result);
-          setLastUpdated(new Date().toLocaleTimeString());
-          // Update converted amount when rate changes
-          if (amount > 0) {
-            setConvertedAmount(parseFloat((amount * data.result).toFixed(2)));
+        if (data.result === 'success') {
+          const rate = data.conversion_rates[toCurrency];
+          if (rate) {
+            setExchangeRate(rate);
+            setLastUpdated(new Date().toLocaleTimeString());
+            if (amount > 0) {
+              setConvertedAmount(parseFloat((amount * rate).toFixed(2)));
+            }
+          } else {
+            throw new Error(`Currency ${toCurrency} not supported`);
           }
         } else {
-          setError('Failed to get exchange rate. Please try again.');
+          throw new Error(data['error-type'] || 'Failed to get exchange rate');
         }
       } catch (error) {
-        setError('Network error. Please check your connection.');
+        // Implement exponential backoff for retries (max 3 retries)
+        if (retryCount < 3) {
+          setTimeout(() => fetchExchangeRate(retryCount + 1), 1000 * Math.pow(2, retryCount));
+          return;
+        }
+        
+        setError('Failed to get exchange rates. Please try again later.');
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     }
@@ -103,7 +135,7 @@ const CurrencyConverter = () => {
 
   return (
     <div className="p-4 border rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Currency Converter</h2>
+      <h2 className="text-2xl font-semibold mb-4">Currency Converter</h2>
       <div className="flex flex-col space-y-4">
         <div className="flex items-center space-x-2">
           <input
@@ -182,17 +214,17 @@ const CurrencyConverter = () => {
             </div>
           )}
           
-          {error && (
-            <div className="text-red-500 text-sm">
-              {error}
-              <button 
-                onClick={fetchExchangeRate} 
-                className="ml-2 text-blue-500 underline"
-              >
-                Retry
-              </button>
-            </div>
-          )}
+              {error && (
+                <div className="text-red-500 text-sm">
+                  {error}
+                  <button 
+                    onClick={() => fetchExchangeRate()} 
+                    className="ml-2 text-blue-500 underline"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
           
           {lastUpdated && !loading && !error && (
             <div className="text-gray-500 text-sm">
